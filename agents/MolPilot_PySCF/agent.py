@@ -11,7 +11,7 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 
 
 
-os.environ["GOOGLE_API_KEY"] = "AIzaSyBDZZ6jq72YqkqeQ0RGSAT1CWpJEGldbFI"
+os.environ["GOOGLE_API_KEY"] = ""
 os.environ["MOLPILOT_SERVER_URL"] = "http://127.0.0.1:50005/sse"
 
 pyscf_tool = CalculationMCPToolset(
