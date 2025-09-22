@@ -11,7 +11,7 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 
 
 
-os.environ["GOOGLE_API_KEY"] = ""
+os.environ["GOOGLE_API_KEY"] = "AIzaSyBDZZ6jq72YqkqeQ0RGSAT1CWpJEGldbFI"
 os.environ["MOLPILOT_SERVER_URL"] = "http://127.0.0.1:50005/sse"
 
 pyscf_tool = CalculationMCPToolset(
@@ -32,7 +32,7 @@ plot_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
         url=os.getenv("MOLPILOT_SERVER_URL")
         ),
-    tool_filter=["plot_spectrum"]
+    tool_filter=["plot_spectrum","execute_python","read_xyz_file"]
     )
 
 mol_view = CalculationMCPToolset(
@@ -151,7 +151,8 @@ report_agent = LlmAgent(
             -   Synthesize all extracted, calculated, and retrieved information into a final, integrated report.
 
         ## Reporting Standards & Guiding Principles:
-        - You can only use the `execute_python` tool to calculate, do not use it to parse output files, do not use it to visualize data, do not use it to analyze data, do not use it to organize data, do not use it to write reports.
+        - You can only use the `execute_python` tool to calculate and analyze data, do not use it to parse output files, do not use it to organize data, do not use it to write reports.
+        - Remember to include \\n in the code you pass to `execute_python` tool and proper indentation to ensure the code runs correctly.
         -   **Format:** The final report MUST be presented in clear, well-structured Markdown. Use tables, lists, and headings to create a professional and easy-to-read document.
         -   **Clarity:** Present only the key data and results in a clean and beautiful format. Avoid personal interpretations or opinions.
         -   **Image Embedding:** Embed generated plots (like IR spectra) directly into the report using appropriate Markdown or HTML syntax.
