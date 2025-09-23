@@ -18,7 +18,7 @@ pyscf_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
         url=os.getenv("MOLPILOT_SERVER_URL")
         ),
-    tool_filter=['process_job','run_dynamic_job']
+    tool_filter=['process_job','run_dynamic_job', 'retrieve_pyscf_doc']
     )
 
 structure_tool = CalculationMCPToolset(
@@ -69,15 +69,11 @@ structure_generate_agent = LlmAgent(
         1.  **Generate Structure:** Call the `smiles_to_xyz` tool with the provided SMILES string to generate the molecular structure in XYZ format.
 
         ### Case 2: User provides a chemical name
-        1.  **Find SMILES:** Use the `get_smiles_from_pubchem` tool to retrieve the canonical SMILES string for the given chemical name.
+        1.  **Find SMILES:** Use the `get_smiles_from_pubchem` tool to retrieve the canonical SMILES string for the given chemical name. The input name should be in English.
         3.  **Generate Structure:** Call the `smiles_to_xyz` tool with the retrieved SMILES string.
 
         ### Case 3: User provides molecular structure as text
         1.  **Write File:** Use the `write_xyz_file` tool to save the provided structural data into a properly formatted XYZ file.
-
-        ### Case 4: User requests mixing of solute and solvent
-        1.  **Verify Structures:** Confirm that the XYZ structures for both the solute and solvent molecules exist. If not, generate them by following Cases 1, 2, or 3.
-        2.  **Mix Molecules:** Call the `packmol_merge` tool to combine the solute and solvent structures into a single system.
 
         ## Finalization and Output:
         After any structure generation or mixing is complete, you MUST perform the following final steps:
@@ -104,7 +100,7 @@ pyscf_agent = LlmAgent(
 
         ### Step 1: Pre-Calculation & User Confirmation
         1.  **Propose & Explain:** Based on the information from root agent, present the proposed  PySCF input parameters to the user. Clearly explain *why* you have chosen this specific combination of methods, basis sets, and keywords.
-        2.  **Await Confirmation:** Proceed only after the user has confirmed the proposed parameters.
+        2.  **MUST Await Confirmation:** Proceed only after the user has CONFIRMED the proposed parameters.
 
         ### Step 2: Task Execution
         0. Try to decompose the task into multiple subtasks if necessary. For example, if the user wants to calculate frequency, you should first optimize the structure, then calculate frequency based on the optimized structure.
@@ -113,17 +109,18 @@ pyscf_agent = LlmAgent(
         Note that process_job is a synchronous tool, you should wait for it to complete and get the result before you can proceed to the next step.
         `process_job` only supports certain types of jobs, if you want to run a job that is not supported by `process_job`, you should use `run_dynamic_job` instead.
         2. For `run_dynamic_job`, you should provide a python script that uses PySCF to perform the desired calculation. DO NOT use `run_dynamic_job` to run a job that is supported by `process_job`.
-        DO NOT include any code that is not directly related to the PySCF calculation in the script.
-        DO NOT include file I/O operations in the script.
+        DO NOT include file I/O operations in the script. You can use the `retrieve_pyscf_doc` tool to get the documentation of PySCF functions and classes.
 
         ### Step 3: Post-Calculation Handoff
         1.  Upon successful completion of all PySCF tasks, you MUST delegate the subsequent analysis and reporting to the `Report_Agent`. Use `Report_Agent` to write a report or analysis the pyscf outputs.
 
         ## Specialized Workflows:
         -   **Single Atoms:** When calculating a single atom, the thermodynamic correction to Gibbs free energy is -0.011953 Ha. the thermodynamic correction to enthalpy is 0.001364.
-
+        -   **Chemical Shift Calculations:** For NMR chemical shift calculations, note that only the Gas phase is supported. You need to first calculate the shielding constant of TMS, then calculate the shielding constant of the target molecule, finally calculate the chemical shift by subtracting the two values.
+        
         ## Critical Constraints:
-        -   **Machine Configuration:** All submitted tasks MUST use cores less than 16, you should decide how many cores need to be used according to the task.""",
+        -   **Machine Configuration:** All submitted tasks MUST use cores less than 16, you should decide how many cores need to be used according to the task.
+        -   **NMR calculations with solvent models are not supported.**""",
     tools=[pyscf_tool],
     )
 
@@ -145,8 +142,6 @@ report_agent = LlmAgent(
             -   For any required numerical post-processing (e.g., energy differences, unit conversions, rate constant calculations), you MUST use the `execute_python` tool.
         3.  **Data Visualization:**
             -   If vibrational frequency data is available and the user requests a plot, call the “plot_spectrum” series of tools to generate an infrared spectrum graph. Your choose the right one to use according to the number of spectra you want to plot at one time. If the user does not request a plot, you should not plot spectra.
-        4.  **External Data Retrieval:**
-            -   If the report requires supplementary information (e.g., experimental values for comparison), you MUST use the `tavily_search` tool to find it.
         5.  **Report Compilation:**
             -   Synthesize all extracted, calculated, and retrieved information into a final, integrated report.
 
