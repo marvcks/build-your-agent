@@ -11,7 +11,7 @@ from dp.agent.adapter.adk import CalculationMCPToolset
 
 
 
-os.environ["GOOGLE_API_KEY"] = "AIzaSyBDZZ6jq72YqkqeQ0RGSAT1CWpJEGldbFI"
+
 os.environ["MOLPILOT_SERVER_URL"] = "http://127.0.0.1:50005/sse"
 
 pyscf_tool = CalculationMCPToolset(
@@ -51,6 +51,17 @@ model = LiteLlm(
 model_save = LiteLlm(
     model="gemini/gemini-2.5-flash"
     )
+
+#model = LiteLlm(
+#    model="xai/grok-4-fast-reasoning",
+#    temperature=0.0,
+#    )
+#
+#model_save = LiteLlm(
+#    model="xai/grok-4-fast-non-reasoning",
+#    temperature=0.0,
+#    )
+
 
 structure_generate_agent = LlmAgent(
     model=model_save,
@@ -117,10 +128,12 @@ pyscf_agent = LlmAgent(
         ## Specialized Workflows:
         -   **Single Atoms:** When calculating a single atom, the thermodynamic correction to Gibbs free energy is -0.011953 Ha. the thermodynamic correction to enthalpy is 0.001364.
         -   **Chemical Shift Calculations:** For NMR chemical shift calculations, note that only the Gas phase is supported. You need to first calculate the shielding constant of TMS, then calculate the shielding constant of the target molecule, finally calculate the chemical shift by subtracting the two values.
+        -   **Emission Spectra:** For emission spectra calculations, you should first optimize the structure of the molecule in the excited state (using optimize tool and set tddft to true), then calculate the vertical excitation energy from the optimized excited state structure. 
         
         ## Critical Constraints:
         -   **Machine Configuration:** All submitted tasks MUST use cores less than 16, you should decide how many cores need to be used according to the task.
         -   **NMR calculations with solvent models are not supported.**""",
+
     tools=[pyscf_tool],
     )
 
