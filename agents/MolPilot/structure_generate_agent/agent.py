@@ -24,13 +24,6 @@ structure_tool = CalculationMCPToolset(
     # tool_filter=['smiles_to_xyz', 'write_xyz_file', "packmol_merge"]
     )
 
-# mol_view = CalculationMCPToolset(
-#     connection_params=SseServerParams(
-#         url=os.getenv("RAG_SERVER_URL")
-#         ),
-#     storage=BOHRIUM_STORAGE,
-#     tool_filter=['convert_xyz_to_molstar_html']
-#     )
 
 
 model = LiteLlm(
