@@ -85,7 +85,7 @@ report_agent = LlmAgent(
         -   **Computational Rigor: NEVER PERFORM MANUAL CALCULATIONS.** All numerical computations MUST be executed via the `execute_python` tool to ensure accuracy and reproducibility.
 
         ## Embedded Reference Data:
-        -   Standard Free Energy of Proton in Water = -265.90 kcal/mol""",
+        -   Standard Free Energy of Proton in Water = -284.3 kcal/mol""",
     tools=[dataAnalysys_tool, scientific_evaluator, adk_tavily_tool, manual_tool],
     disallow_transfer_to_parent=True,
     )

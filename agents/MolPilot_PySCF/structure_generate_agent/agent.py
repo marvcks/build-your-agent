@@ -4,13 +4,12 @@ load_dotenv()
 
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
-# from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
+from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from dp.agent.adapter.adk import CalculationMCPToolset
 
 from .constant import (
-    BOHRIUM_EXECUTOR, 
-    BOHRIUM_STORAGE, 
+    BOHRIUM_EXECUTOR, BOHRIUM_STORAGE, 
     # USED_MACHINE_TYPE, MACHINE_SETTING
 )
 from ..tools import adk_tavily_tool
@@ -20,10 +19,7 @@ structure_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
         url=os.getenv("STRUCTURE_GENERATE_SERVER_URL")
         ),
-    executor={'type': 'local'},
-    # executor=BOHRIUM_EXECUTOR,
     storage=BOHRIUM_STORAGE,
-    tool_filter=['smiles_to_xyz', 'write_xyz_file', "packmol_merge", "convert_xyz_to_molstar_html"]
     )
 
 
@@ -51,8 +47,9 @@ structure_generate_agent = LlmAgent(
         1.  **Generate Structure:** Call the `smiles_to_xyz` tool with the provided SMILES string to generate the molecular structure in XYZ format.
 
         ### Case 2: User provides a chemical name
-        1.  **Find SMILES:** Use the `tavily_search` tool to find the canonical SMILES string for the given chemical name.
-        2.  **Generate Structure:** Call the `smiles_to_xyz` tool with the retrieved SMILES string.
+        1.  **Find SMILES:** Use the `get_smiles_from_pubchem` tool to retrieve the canonical SMILES string for the given chemical name. The input name should be in English.
+        2.  **Find SMILES:** Use the `tavily_search` tool to find the canonical SMILES string for the given chemical name.
+        3.  **Generate Structure:** Call the `smiles_to_xyz` tool with the retrieved SMILES string.
 
         ### Case 3: User provides molecular structure as text
         1.  **Write File:** Use the `write_xyz_file` tool to save the provided structural data into a properly formatted XYZ file.
@@ -63,7 +60,7 @@ structure_generate_agent = LlmAgent(
 
         ## Finalization and Output:
         After any structure generation or mixing is complete, you MUST perform the following final steps:
-        1.  **Visualize:** Call the `convert_xyz_to_molstar_html` tool on the final XYZ file to create an interactive visualization. Return the resulting HTML file link to the user.
+        1.  **Visualize:** Call the `convert_xyz_to_molstar_html` tool on the final XYZ file to create an interactive visualization. Return the resulting HTML file link to the user. You can use `local_file_to_r2_url` tool to upload the html file to R2 and get a public link.
         2.  **Summarize:** Conclude your response with a brief summary. Provide a Markdown link to the generated visualization. The link text should be descriptive (e.g., "查看 [分子名称] 的三维结构"), and the URL itself should not be displayed directly.
 
         ## Constraints:
