@@ -20,12 +20,20 @@ dataAnalysys_tool = CalculationMCPToolset(
         url=os.getenv("DATANALYSIS_SERVER_URL")
         ),
     storage=BOHRIUM_STORAGE,
+    tool_filter=[
+        "get_data_from_opt_output",
+        "get_data_from_freq_output",
+        "plot_three_ir_spectra",
+        "plot_two_ir_spectra",
+        "plot_one_ir_spectra",
+    ],
     )
 
 manual_tool = MCPToolset(
     connection_params=SseServerParams(
         url=os.getenv("MANUAL_RAG_SERVER_URL"),
         ),
+    tool_filter=['retrieve_content_from_docs']
     )
 
 scientific_evaluator = CalculationMCPToolset(

@@ -7,7 +7,8 @@ from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from dp.agent.adapter.adk import CalculationMCPToolset
 
 from .constant import (
-    BOHRIUM_EXECUTOR, BOHRIUM_STORAGE,
+    BOHRIUM_EXECUTOR, 
+    BOHRIUM_STORAGE,
     )
 
 
@@ -16,21 +17,25 @@ orca_tool = CalculationMCPToolset(
         url=os.getenv("ORCA_SERVER_URL")
         ),
     # executor=BOHRIUM_EXECUTOR,
+    executor={'type': 'local'},
     storage=BOHRIUM_STORAGE,
+    tool_filter=['run_orca_calculation']
     )
 
 manual_tool = MCPToolset(
     connection_params=SseServerParams(
         url=os.getenv("MANUAL_RAG_SERVER_URL"),
         ),
+    tool_filter=['retrieve_content_from_docs'],
     )
 
 reaction_tool = CalculationMCPToolset(
         connection_params=SseServerParams(
             url=os.getenv("REACTION_URL")
         ),
-    # executor=BOHRIUM_EXECUTOR,
+    executor=BOHRIUM_EXECUTOR,
     storage=BOHRIUM_STORAGE,
+    tool_filter=['calculate_reaction_profile']
     )
 
 model = LiteLlm(
@@ -68,7 +73,7 @@ orca_agent = LlmAgent(
 
         ## Critical Constraints:
         -   **Concurrency Limit:** You can manage a maximum of three (3) concurrent Orca tasks. You MUST wait for at least one to complete before submitting a new one if the limit is reached.
-        -   **Machine Configuration:** All submitted tasks MUST use cores less than 16, you should decide how many cores need to be used according to the task.""",
+        -   **Machine Configuration:** All submitted tasks MUST use cores less than 8, you should decide how many cores need to be used according to the task.""",
     tools=[orca_tool, manual_tool, reaction_tool],
     )
 

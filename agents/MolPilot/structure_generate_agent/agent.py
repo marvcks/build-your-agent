@@ -4,12 +4,13 @@ load_dotenv()
 
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
-from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
+# from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from dp.agent.adapter.adk import CalculationMCPToolset
 
 from .constant import (
-    BOHRIUM_EXECUTOR, BOHRIUM_STORAGE, 
+    BOHRIUM_EXECUTOR, 
+    BOHRIUM_STORAGE, 
     # USED_MACHINE_TYPE, MACHINE_SETTING
 )
 from ..tools import adk_tavily_tool
@@ -19,9 +20,10 @@ structure_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
         url=os.getenv("STRUCTURE_GENERATE_SERVER_URL")
         ),
+    executor={'type': 'local'},
     # executor=BOHRIUM_EXECUTOR,
     storage=BOHRIUM_STORAGE,
-    # tool_filter=['smiles_to_xyz', 'write_xyz_file', "packmol_merge"]
+    tool_filter=['smiles_to_xyz', 'write_xyz_file', "packmol_merge", "convert_xyz_to_molstar_html"]
     )
 
 # mol_view = CalculationMCPToolset(
