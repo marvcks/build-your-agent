@@ -17,7 +17,7 @@ from ..tools import adk_tavily_tool
 
 dataAnalysys_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
-        url=os.getenv("DATANALYSIS_SERVER_URL")
+        url=os.getenv("MOLPILOT_SERVER_URL")
         ),
     storage=BOHRIUM_STORAGE,
     tool_filter=[
@@ -31,7 +31,7 @@ dataAnalysys_tool = CalculationMCPToolset(
 
 manual_tool = MCPToolset(
     connection_params=SseServerParams(
-        url=os.getenv("MANUAL_RAG_SERVER_URL"),
+        url=os.getenv("MOLPILOT_SERVER_URL"),
         ),
     tool_filter=['retrieve_content_from_docs']
     )

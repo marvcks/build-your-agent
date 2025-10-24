@@ -13,29 +13,29 @@ from .constant import (
 
 orca_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
-        url=os.getenv("ORCA_SERVER_URL")
+        url=os.getenv("MOLPILOT_SERVER_URL")
+        # url="http://tuga1396389.bohrium.tech:50001/sse"
         ),
-    # executor=BOHRIUM_EXECUTOR,
-    executor={'type': 'local'},
+    executor=BOHRIUM_EXECUTOR,
     storage=BOHRIUM_STORAGE,
-    tool_filter=['run_orca_calculation']
+    tool_filter=['run_orca_calculation', 'calculate_reaction_profile']
     )
 
 manual_tool = MCPToolset(
     connection_params=SseServerParams(
-        url=os.getenv("MANUAL_RAG_SERVER_URL"),
+        url=os.getenv("MOLPILOT_SERVER_URL"),
         ),
     tool_filter=['retrieve_content_from_docs'],
     )
 
-reaction_tool = CalculationMCPToolset(
-        connection_params=SseServerParams(
-            url=os.getenv("REACTION_URL")
-        ),
-    executor=BOHRIUM_EXECUTOR,
-    storage=BOHRIUM_STORAGE,
-    tool_filter=['calculate_reaction_profile']
-    )
+# reaction_tool = CalculationMCPToolset(
+#         connection_params=SseServerParams(
+#             url=os.getenv("MOLPILOT_SERVER_URL")
+#         ),
+#     executor=BOHRIUM_EXECUTOR,
+#     storage=BOHRIUM_STORAGE,
+#     tool_filter=['calculate_reaction_profile']
+#     )
 
 model = LiteLlm(
     model=os.getenv("MODEL_NAME"),
@@ -76,13 +76,12 @@ orca_agent = LlmAgent(
         -   **Single Atoms:** When calculating a single atom by ORCA, the input line MUST NOT contain "Opt". Use `! SP FREQ` followed by the chosen method and basis set.
 
         ## Critical Constraints:
-        -   **Concurrency Limit:** You can manage a maximum of two concurrent ORCA tasks. 
-            You MUST wait for at least one to complete before submitting a new one if the limit is reached.
-        -   **Machine Configuration:** All submitted tasks MUST use cores less than 8, you should decide how many cores need to be used according to the task.""",
+        -   如果你需要计算的分子结构还没有生成，你必须先使用Structure_Generate_Agent生成分子结构，然后才能进行后续的ORCA计算.
+        -   **Machine Configuration:** All submitted tasks MUST use cores less than 32, you should decide how many cores need to be used according to the task.""",
     tools=[
         orca_tool, 
         manual_tool, 
-        reaction_tool,
+        # reaction_tool,
         ],
     )
 

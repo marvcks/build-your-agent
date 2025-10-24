@@ -1,5 +1,5 @@
 bohr-agent-sdk== 0.1.101
 bohrium-sdk==0.13.0
 google-adk==1.2.1
-angchain==0.3.26
+langchain==0.3.26
 langchain-community==0.3.27

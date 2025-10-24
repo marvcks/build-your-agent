@@ -3,7 +3,7 @@ import os
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 from .sub_agents import orca_agent
-# from .sub_agents import pyscf_agent
+from .sub_agents import pyscf_agent
 
 
 model = LiteLlm(
@@ -20,12 +20,14 @@ experiment_agent = LlmAgent(
     # Role: Quantum Chemistry Experiment Assistant
 
     ## Primary Objective:
-    Your primary objective is to understand the user's computational chemistry goals, then deliver the task to sub-agent.""",
+    Your primary objective is to understand the user's computational chemistry goals, then deliver the task to sub-agent.
+    
+    当用户需要结构优化, 计算过渡态,光谱时, 使用orca_agent处理任务.
+    当用户需要进行量子化学计算, 例如计算分子轨道, 电子性质时, 使用pyscf_agent处理任务.
+    """,
     sub_agents=[
             orca_agent,
-            # pyscf_agent,
+            pyscf_agent,
             # ase_agent,
         ],
     )
-
-

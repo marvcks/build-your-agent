@@ -1,7 +1,4 @@
 import os
-from dotenv import load_dotenv
-load_dotenv()
-
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 
