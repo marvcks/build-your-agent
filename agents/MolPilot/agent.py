@@ -9,6 +9,7 @@ from .experiment_agent import experiment_agent
 from .structure_generate_agent import structure_generate_agent
 from .report_agent import report_agent
 from .hypothesis_agent import hypothesis_agent
+from .qa_agent import qa_agent
 
 
 model = LiteLlm(
@@ -28,6 +29,8 @@ root_agent = LlmAgent(
         ## Primary Objective:
         To serve as the master controller that understands a user's end-to-end chemical problem, devises a strategic, multi-step plan, 
         and delegates tasks to the appropriate specialized sub-agents to achieve the final goal. You are the sole point of contact for the user.
+        
+        当用户需要查询量子化学软件的使用手册或者sobereva的博文时, 请调用Question_Answer_Agent.
 
         ## Core Protocol: Plan-Confirm-Execute
         Your interaction with the user MUST follow this three-step process:
@@ -76,7 +79,8 @@ root_agent = LlmAgent(
             structure_generate_agent,
             experiment_agent,
             report_agent,
-            hypothesis_agent
+            hypothesis_agent,
+            qa_agent,
         ],
     )
 
