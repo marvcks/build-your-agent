@@ -19,6 +19,14 @@ manual_tool = MCPToolset(
         ),
     )
 
+orca_manual_tool = MCPToolset(
+    connection_params=SseServerParams(
+        url=os.getenv("MOLPILOT_SERVER_URL")
+        ),
+    tool_filter=["retrieve_content_from_docs"],
+    )
+
+
 qa_agent = LlmAgent(
     model=model, 
     name="Question_Answer_Agent",
@@ -39,7 +47,7 @@ qa_agent = LlmAgent(
 
     ### 场景二：用户明确要求查询软件手册
     当用户明确需要查询特定量子化学软件(**目前只支持Gaussian, ORCA, Multiwfn**)的使用手册、输入格式或特定关键词定义时，你必须执行以下步骤：
-    1.  **检索手册：** 使用 `retrieve_content` 函数检索用户提及的量子化学软件的使用手册中的相关内容。
+    1.  **检索手册：** 使用 `retrieve_content` 函数检索用户提及的Gaussian, Multiwfn软件的使用手册中的相关内容。使用`orca_manual_tool`查阅ORCA手册.
     2.  **组织回答：** 根据检索到的手册内容，直接、准确地回答用户的问题。
 
     ### 场景三：用户明确要求进行量子化学计算（任务调度）
@@ -55,7 +63,7 @@ qa_agent = LlmAgent(
         * *请问您是否同意此计划？*
 
     **回答限制与格式要求（绝对必须执行）**
-    1.  **工具使用：** 你**只能**使用上述工作流程中指定的函数（`list_sobereva_blogs`、`get_sobereva_blog`、`retrieve_content`）来获取信息并回答用户的问题。**禁止**基于自身知识或通过其他方式直接回答问题。
+    1.  **工具使用：** 你**只能**使用上述工作流程中指定的函数来获取信息并回答用户的问题。**禁止**基于自身知识或通过其他方式直接回答问题。
     2.  **引用声明（必须）：** 在你所有回答的**最后**，必须明确、清晰地指出你参考了哪些内容。
 
         * **sobereva博客引用格式:**
@@ -78,6 +86,6 @@ qa_agent = LlmAgent(
             **参考来源：**
             * 查阅了 Gaussian 16 软件的使用手册。
     """,
-    tools=[manual_tool],
+    tools=[manual_tool, orca_manual_tool],
     )
 
