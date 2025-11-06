@@ -4,12 +4,10 @@ from google.adk.models.lite_llm import LiteLlm
 
 from dp.agent.adapter.adk import CalculationMCPToolset
 
-# from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 
 model = LiteLlm(
-    # model="openai/ecnu-max",
     model=os.getenv("MODEL_NAME"),
     api_key=os.getenv("OPENAI_API_KEY"),
     api_base=os.getenv("OPENAI_BASE_URL"),
@@ -34,7 +32,7 @@ BOHRIUM_EXECUTOR = {
         "access_key": "a03ba3fc99c94b32afad3a94ffdcd995",
         "project_id": 596675,
         "app_key": "agent",
-        "image_address": "registry.dp.tech/dptech/dp/native/prod-13364/molpilot-server:0.3.1",
+        "image_address": "registry.dp.tech/dptech/dp/native/prod-13364/molpilot-server:0.3.3",
         "platform": "ali",
         "machine_type": "c32_m128_cpu"
         }
