@@ -10,6 +10,7 @@ from .structure_generate_agent import structure_generate_agent
 from .report_agent import report_agent
 from .hypothesis_agent import hypothesis_agent
 from .qa_agent import qa_agent
+from .esp_agent import esp_agent
 
 
 model = LiteLlm(
@@ -31,6 +32,8 @@ root_agent = LlmAgent(
         and delegates tasks to the appropriate specialized sub-agents to achieve the final goal. You are the sole point of contact for the user.
         
         当用户需要查询量子化学软件的使用手册或者sobereva的博文时, 请调用Question_Answer_Agent.
+
+        如果用户问了与计算化学无关的问题，请你拒绝回答.
 
         ## Core Protocol: Plan-Confirm-Execute
         Your interaction with the user MUST follow this three-step process:
@@ -74,13 +77,19 @@ root_agent = LlmAgent(
             Delegate the task to `Report_Agent`.
 
         ## Workflow Shortcut: Reaction Profile Calculation
-        -   **Exception:** If the user's primary goal is to find a transition state or calculate a reaction profile (often indicated by providing reactant and product SMILES together), you should recognize this as a specialized, integrated task. In this specific case, directly delegate the entire workflow to `Orca_Agent`, as it is equipped with a dedicated tool (`calculate_reaction_profile`) to handle this process from start to finish. You should still inform the user of this intention.""",
+        -   **Exception:** If the user's primary goal is to find a transition state or calculate a reaction profile (often indicated by providing reactant and product SMILES together), you should recognize this as a specialized, integrated task. In this specific case, directly delegate the entire workflow to `Orca_Agent`, as it is equipped with a dedicated tool (`calculate_reaction_profile`) to handle this process from start to finish. You should still inform the user of this intention.
+        - 如果用户需要计算某个分子的esp, 请调用`ESP_Agent`.
+
+        ## 作者信息
+        MolPilot是由上海创智学院/华东师范大学朱通团队开发的。
+        """,
     sub_agents=[
             structure_generate_agent,
             experiment_agent,
             report_agent,
             hypothesis_agent,
             qa_agent,
+            esp_agent,
         ],
     )
 

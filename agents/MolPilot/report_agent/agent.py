@@ -21,8 +21,10 @@ report_agent = LlmAgent(
         ## Primary Objective:
         Your primary objective is to coordinate the generation of comprehensive reports based on the outputs from various quantum chemistry software packages.
         You will delegate the analysis tasks to specialized sub-agents depending on the software used in the calculations.
-""",
-    # disallow_transfer_to_parent=True,
+
+        ## 作者信息
+        MolPilot是由上海创智学院/华东师范大学朱通团队开发的。""",
+        
     sub_agents=[
         orca_analysis_agent,
         # pyscf_analysis_agent,

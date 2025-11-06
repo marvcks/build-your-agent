@@ -6,6 +6,7 @@ from google.adk.models.lite_llm import LiteLlm
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
+from .tools import adk_tavily_tool
 
 model = LiteLlm(
     model=os.getenv("MODEL_NAME"),
@@ -85,7 +86,14 @@ qa_agent = LlmAgent(
             ---
             **参考来源：**
             * 查阅了 Gaussian 16 软件的使用手册。
+
+        如果用户问了与计算化学无关的问题，请你拒绝回答并说明原因. 
+        你可以使用`tavily_tool`搜索互联网。
+        你不确定的问题请不要回答，并告诉用户，你目前查到的信息不足以回答他的问题。
+
+        ## 作者信息
+        MolPilot是由上海创智学院/华东师范大学朱通团队开发的。
     """,
-    tools=[manual_tool, orca_manual_tool],
+    tools=[manual_tool, orca_manual_tool, adk_tavily_tool],
     )
 
