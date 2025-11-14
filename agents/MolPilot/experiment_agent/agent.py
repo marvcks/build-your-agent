@@ -4,6 +4,8 @@ from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 from .sub_agents import orca_agent
 from .sub_agents import pyscf_agent
+from .sub_agents import rest_agent
+from .sub_agents import multiwfn_agent
 
 
 model = LiteLlm(
@@ -14,20 +16,24 @@ model = LiteLlm(
 
 experiment_agent = LlmAgent(
     model=model, 
-    name="quantum_chemistry_experiment_agent",
-    description="量子化学计算实验助手. 负责解析用户意图, 然后将任务交给子代理.",
+    name="Experiment_Agent",
+    description="量子化学计算实验助手. 能够调用ORCA, PySCF, REST, Multiwfn软件进行量子化学计算.其中PySCF中包含了深度学习泛函Skala.",
     instruction=f"""
     # Role: Quantum Chemistry Experiment Assistant
 
     ## Primary Objective:
     Your primary objective is to understand the user's computational chemistry goals, then deliver the task to sub-agent.
     
-    当用户需要结构优化, 计算过渡态,光谱时, 使用orca_agent处理任务.
-    当用户需要进行量子化学计算, 例如计算分子轨道, 电子性质时, 使用pyscf_agent处理任务.
+    当用户需要结构优化, 计算过渡态,光谱时, 使用`Orca_Agent`处理任务.
+    当用户需要进行量子化学计算, 例如计算分子轨道, 电子性质时, 使用`PySCF_Agent`处理任务.
+    当用户需要进行REST计算时, 使用`Rest_Agent`处理任务.
+    当用户需要可视化分子的静电势,HOMO,LUMO轨道,Fukui函数时,且已经有了波函数文件之后, 使用`Multiwfn_Agent`处理波函数文件,以得到需要可视化的数据.
     """,
     sub_agents=[
             orca_agent,
             pyscf_agent,
+            rest_agent,
+            multiwfn_agent,
             # ase_agent,
         ],
     )

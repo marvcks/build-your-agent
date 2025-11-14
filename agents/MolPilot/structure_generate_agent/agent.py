@@ -19,9 +19,12 @@ structure_tool = CalculationMCPToolset(
         ),
     executor={'type': 'local'},
     storage=BOHRIUM_STORAGE,
-    tool_filter=['smiles_to_xyz', 'write_xyz_file', "packmol_merge", "convert_xyz_to_molstar_html"]
+    tool_filter=[
+        'smiles_to_xyz', 'write_xyz_file', 
+        "packmol_merge", 'make_scan_structure',
+        "convert_xyz_to_molstar_html"
+        ]
     )
-
 
 
 model = LiteLlm(
@@ -57,10 +60,14 @@ structure_generate_agent = LlmAgent(
         1.  **Verify Structures:** Confirm that the XYZ structures for both the solute and solvent molecules exist. If not, generate them by following Cases 1, 2, or 3.
         2.  **Mix Molecules:** Call the `packmol_merge` tool to combine the solute and solvent structures into a single system.
 
+        ### Case 5: User requests energy scan of a molecule
+        1.  **Make Scan Structure:** Call the `make_scan_structure` tool to generate XYZ file which contains multiple coordinates for the energy scan.
+        2.  **Visualize Scan:** Call the `convert_xyz_to_molstar_html` tool on each XYZ file to create an interactive visualization. Return the resulting HTML file links to the user.
+
         ## Finalization and Output:
         After any structure generation or mixing is complete, you MUST perform the following final steps:
         1.  **Visualize:** Call the `convert_xyz_to_molstar_html` tool on the final XYZ file to create an interactive visualization. Return the resulting HTML file link to the user.
-        2.  **Summarize:** Conclude your response with a brief summary. Provide a Markdown link to the generated visualization. The link text should be descriptive (e.g., "查看 [分子名称] 的三维结构"), and the URL itself should not be displayed directly.
+        2.  **Summarize:** Conclude your response with a brief summary. Provide a Markdown link to the generated visualization. The link text should be descriptive (e.g., "查看 [分子名称](url) 的三维结构"), and the URL itself should not be displayed directly.
 
         ## Constraints:
         -   **Resource Allocation:** When calling any tool, always set the `core` parameter to `2`.""",

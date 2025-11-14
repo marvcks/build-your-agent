@@ -1,10 +1,62 @@
 import os
-from google.adk.agents import LlmAgent
-from google.adk.models.lite_llm import LiteLlm
+import requests
 
 from dp.agent.adapter.adk import CalculationMCPToolset
 
+from google.adk.agents import LlmAgent
+from google.adk.models.lite_llm import LiteLlm
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
+from google.adk.tools import ToolContext
+
+from google import genai
+from google.genai import types
+
+
+async def get_image_from_url(image_url: str, tool_context: ToolContext):
+
+    try:
+        response = requests.get(image_url)
+        response.raise_for_status()
+        image_bytes = response.content
+
+        counter = str(tool_context.state.get("loop_iteration", 0))
+        artifact_name = f"generated_image_" + counter + ".png"
+
+        # Save as ADK artifact (optional, if still needed by other ADK components)
+        report_artifact = types.Part.from_bytes(
+            data=image_bytes, mime_type="image/png"
+        )
+
+        await tool_context.save_artifact(artifact_name, report_artifact)
+        print(f"Image also saved as ADK artifact: {artifact_name}")
+
+        return {
+            "status": "success",
+            "message": f"Image generated. ADK artifact: {artifact_name}.",
+            "artifact_name": artifact_name,
+        }
+    except Exception as e:
+        return {"status": "error", "message": "No images generated.  {e}"}
+
+
+# not used.
+async def get_image(tool_context: ToolContext):
+    try:
+        
+        artifact_name = (
+            f"generated_image_" + str(tool_context.state.get("loop_iteration", 0)) + ".png"
+        )
+        artifact = await tool_context.load_artifact(artifact_name)
+    
+        return {
+            "status": "success",
+            "message": f"Image artifact {artifact_name} successfully loaded."
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"Error loading artifact {artifact_name}: {str(e)}"
+        }
 
 
 model = LiteLlm(
@@ -59,7 +111,11 @@ vmd_tool = CalculationMCPToolset(
         url=os.getenv("MOLPILOT_SERVER_URL")
         ),
     storage=BOHRIUM_STORAGE,
-    tool_filter=['smiles_to_xyz', 'get_vmd_manual', 'run_vmd', 'draw_esp', 'draw_orbital', 'run_multiwfn_esp', 'write_xyz_file']
+    tool_filter=[
+        'get_vmd_manual', 'run_vmd', 'draw_esp', 'draw_orbital', 
+        'run_multiwfn_esp', 'run_multiwfn_get_esp_min_max', 'run_multiwfn_draw_area', 'draw_colorbar_for_esp', 
+        'run_multiwfn_orbital', 'run_multiwfn_fukui'
+        ]
     )
 
 
@@ -82,11 +138,17 @@ esp_agent = LlmAgent(
     如果用户需要画ESP图, 你需要先调用`draw_esp`工具来绘制ESP图。
     如果用户需要画分子轨道图, 你需要先调用`draw_orbital`工具来绘制分子轨道图。
 
+    画好图之后, 你需要调用`get_image_from_url`工具来读取图片的内容, 你需要根据图片内容调整你编写的tcl代码, 从而调整你绘制的图, 例如调整图的大小, 清晰度等。
+
     所有画好图之后, 请你使用Markdown格式来展示图. 首先展示分子结构图, 然后展示ESP图和分子轨道图(如果有).
 
     ## 作者信息
     MolPilot是由上海创智学院/华东师范大学朱通团队开发的。
     """,
-    tools=[orca_tool, vmd_tool],
+    tools=[
+        # orca_tool, 
+        vmd_tool, 
+        get_image_from_url
+        ],
     )
 

@@ -1,6 +1,4 @@
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
@@ -52,7 +50,7 @@ model = LiteLlm(
 
 orca_analysis_agent = LlmAgent(
     model=model, 
-    name="orca_analysis_agent",
+    name="Orca_Analysis_Agent",
     description="计算结果分析与报告生成器。负责从Orca输出文件中提取关键数据,执行必要的后处理计算,并根据用户要求撰写清晰,美观的最终报告.",
     instruction="""
         # Role: Calculation Report Generator

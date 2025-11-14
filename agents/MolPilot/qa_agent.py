@@ -18,6 +18,7 @@ manual_tool = MCPToolset(
     connection_params=SseServerParams(
         url=os.getenv("MANUAL_SERVER_URL")
         ),
+    tool_filter=["list_sobereva_blogs", "get_sobereva_blog", "retrieve_content"]
     )
 
 orca_manual_tool = MCPToolset(

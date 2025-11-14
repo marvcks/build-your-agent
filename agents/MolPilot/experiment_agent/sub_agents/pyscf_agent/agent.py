@@ -37,7 +37,7 @@ model = LiteLlm(
 
 pyscf_agent = LlmAgent(
     model=model, 
-    name="pyscf_agent",
+    name="PySCF_Agent",
     description="PySCF量子化学计算任务管理器. 负责解析用户意图, 准备计算输入, 并使用PySCF执行结构优化、频率分析、电子性质计算等任务.",
     instruction=f"""
         # Role: PySCF Quantum Chemistry Assistant

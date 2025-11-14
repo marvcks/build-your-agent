@@ -45,7 +45,7 @@ model = LiteLlm(
 
 orca_agent = LlmAgent(
     model=model, 
-    name="orca_agent",
+    name="Orca_Agent",
     description="ORCA量子化学计算任务管理器. 负责解析用户意图, 准备计算输入, 并使用ORCA执行结构优化、频率分析、电子性质计算等任务.",
     instruction=f"""
         # Role: ORCA Quantum Chemistry Assistant
