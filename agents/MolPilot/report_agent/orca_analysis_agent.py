@@ -10,7 +10,7 @@ from .constant import (
     BOHRIUM_EXECUTOR, BOHRIUM_STORAGE, 
     # USED_MACHINE_TYPE, MACHINE_SETTING
 )
-from ..tools import adk_tavily_tool
+from ..tools import adk_tavily_tool, get_image_from_url, get_image
 
 
 dataAnalysys_tool = CalculationMCPToolset(
@@ -68,14 +68,15 @@ orca_analysis_agent = LlmAgent(
             -   If vibrational frequency data is available and the user requests a plot, call the “plot_ir_spectra” series of tools to generate an infrared spectrum graph. Your choose the right one to use according to the number of spectra you want to plot at one time. If the user does not request a plot, you should not plot spectra.
         4.  **External Data Retrieval:**
             -   If the report requires supplementary information (e.g., experimental values for comparison), you MUST use the `tavily_search` tool to find it.
-        5.  **Report Compilation:**
+        5.  **Image Handling:**
+            -   If there are any images generated during the calculation, you need to use the `get_image_from_url` tool to download the image, then use the `get_image` tool to get the image. Finally, embed the image in the report and explain its content(you should use Markdown syntax to embed the image.e.g.<img src="https//xxx" alt="xxx" width="50" height="50">).
+        6.  **Report Compilation:**
             -   Synthesize all extracted, calculated, and retrieved information into a final, integrated report.
 
         ## Reporting Standards & Guiding Principles:
         - You can only use the `execute_python` tool to calculate, do not use it to parse output files, do not use it to visualize data, do not use it to analyze data, do not use it to organize data, do not use it to write reports.
         -   **Format:** The final report MUST be presented in clear, well-structured Markdown. Use tables, lists, and headings to create a professional and easy-to-read document.
         -   **Clarity:** Present only the key data and results in a clean and beautiful format. Avoid personal interpretations or opinions.
-        -   **Image Embedding:** Embed generated plots (like IR spectra) directly into the report using appropriate Markdown or HTML syntax.
 
         ## Critical Constraints:
         -   **Data Integrity: NEVER FABRICATE DATA.** All reported values must originate directly from the Orca output files, `execute_python` calculations, or verifiable sources found via `tavily_search`.
@@ -84,7 +85,7 @@ orca_analysis_agent = LlmAgent(
 
         ## Embedded Reference Data:
         -   Standard Free Energy of Proton in Water = -284.3 kcal/mol""",
-    tools=[dataAnalysys_tool, scientific_evaluator, adk_tavily_tool, manual_tool],
+    tools=[dataAnalysys_tool, scientific_evaluator, adk_tavily_tool, manual_tool, get_image_from_url, get_image],
     disallow_transfer_to_parent=True,
     )
 

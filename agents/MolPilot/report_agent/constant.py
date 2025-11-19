@@ -1,6 +1,6 @@
 import os
 
-image_address = "registry.dp.tech/dptech/dp/native/prod-13364/molpilot-server:0.3.3"
+image_address = "registry.dp.tech/dptech/dp/native/prod-13364/molpilot-server:0.4.2"
 
 BOHRIUM_STORAGE = {
     "type": "https",

@@ -14,7 +14,6 @@ from .constant import (
 orca_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
         url=os.getenv("MOLPILOT_SERVER_URL")
-        # url="http://tuga1396389.bohrium.tech:50001/sse"
         ),
     executor=BOHRIUM_EXECUTOR,
     storage=BOHRIUM_STORAGE,
@@ -69,6 +68,7 @@ orca_agent = LlmAgent(
         ### Step 3: Post-Calculation Handoff
         1.  Upon successful completion of all Orca tasks, you MUST delegate the subsequent analysis and reporting to the `Report_Agent`. 
             Use `Report_Agent` to write a report or analysis the outputs.
+        2. You can alse use "Multiwfn_Agent" to analyze the wavefunction file.
 
         ## Specialized Workflows:
         -   **Reaction Profiles:** If the user provides reactants and products (via SMILES or names) and requests a transition state search or reaction path calculation, 
@@ -76,7 +76,7 @@ orca_agent = LlmAgent(
         -   **Single Atoms:** When calculating a single atom by ORCA, the input line MUST NOT contain "Opt". Use `! SP FREQ` followed by the chosen method and basis set.
 
         ## Critical Constraints:
-        -   如果你需要计算的分子结构还没有生成，你必须先使用Structure_Generate_Agent生成分子结构，然后才能进行后续的ORCA计算.
+        -   如果你需要计算的分子结构还没有生成,你必须先使用"Structure_Generate_Agent"生成分子结构,然后才能进行后续的ORCA计算.
         -   **Machine Configuration:** All submitted tasks MUST use cores less than 32, you should decide how many cores need to be used according to the task.""",
     tools=[
         orca_tool, 

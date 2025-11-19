@@ -66,7 +66,6 @@ async def get_image(tool_context: ToolContext):
         }
 
 
-# score must be one of pass, fail
 def set_score(tool_context: ToolContext, score: str) -> str:
     """
     Set the score of the visualization evaluation.
@@ -123,12 +122,12 @@ def check_condition_and_escalate_tool(tool_context: ToolContext) -> dict:
 check_tool_condition = FunctionTool(func=check_condition_and_escalate_tool)
 
 
-
 model = LiteLlm(
     model=os.getenv("MODEL_NAME"),
     api_key=os.getenv("OPENAI_API_KEY"),
     api_base=os.getenv("OPENAI_BASE_URL"),
     )
+
 
 BOHRIUM_STORAGE = {
     "type": "https",
@@ -160,7 +159,6 @@ BOHRIUM_EXECUTOR = {
         }
     }
     }
-
 
 vmd_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
@@ -206,9 +204,8 @@ evaulator_agent = LlmAgent(
 
     评估可视化结果的质量时, 你需要考虑以下几个方面:
     - 图片中的分子大小(scale by x.x)是否合适
-    - 图片中展示的分子或者等值面的角度是否合适
+    - 图片中展示的分子或者等值面的角度是否合适, 等值面是否完整的展示出来了
     - 等值面大小(set isoval x.xx)是否合适
-    等等
 
     如果你给出了"fail", 请你给出具体的改进建议.不需要提问.
 
@@ -246,7 +243,8 @@ image_generation_scoring_agent = SequentialAgent(
         """
     ),
     sub_agents=[
-        draw_agent, evaulator_agent
+        draw_agent, 
+        evaulator_agent
         ],
     )
 
@@ -254,5 +252,8 @@ image_generation_scoring_agent = SequentialAgent(
 vmd_agent = LoopAgent(
     name="VMD_Agent",
     description="分子可视化助手, 主要是用VMD软件来可视化分子静电势,分子轨道,Fukui函数.",
-    sub_agents=[image_generation_scoring_agent, checker_agent_instance],
+    sub_agents=[
+        image_generation_scoring_agent, 
+        checker_agent_instance
+        ],
     )
