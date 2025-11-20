@@ -6,11 +6,13 @@ from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 from dp.agent.adapter.adk import CalculationMCPToolset
 
+from google.adk.tools.load_artifacts_tool import load_artifacts_tool
+from ..tools import adk_tavily_tool, get_image_from_url
+
 from .constant import (
     BOHRIUM_EXECUTOR, BOHRIUM_STORAGE, 
     # USED_MACHINE_TYPE, MACHINE_SETTING
 )
-from ..tools import adk_tavily_tool, get_image_from_url, get_image
 
 
 dataAnalysys_tool = CalculationMCPToolset(
@@ -51,7 +53,7 @@ model = LiteLlm(
 orca_analysis_agent = LlmAgent(
     model=model, 
     name="Orca_Analysis_Agent",
-    description="计算结果分析与报告生成器。负责从Orca输出文件中提取关键数据,执行必要的后处理计算,并根据用户要求撰写清晰,美观的最终报告.",
+    description="负责从Orca输出文件中提取关键数据,执行必要的后处理计算,并根据用户要求撰写清晰,美观的最终报告.",
     instruction="""
         # Role: Calculation Report Generator
 
@@ -69,7 +71,7 @@ orca_analysis_agent = LlmAgent(
         4.  **External Data Retrieval:**
             -   If the report requires supplementary information (e.g., experimental values for comparison), you MUST use the `tavily_search` tool to find it.
         5.  **Image Handling:**
-            -   If there are any images generated during the calculation, you need to use the `get_image_from_url` tool to download the image, then use the `get_image` tool to get the image. Finally, embed the image in the report and explain its content(you should use Markdown syntax to embed the image.e.g.<img src="https//xxx" alt="xxx" width="50" height="50">).
+            -   If there are any images generated during the calculation, you need to use the `get_image_from_url` tool to download the image, then use the `load_artifacts_tool` tool to get the image. Finally, embed the image in the report and explain its content(you should use Markdown syntax to embed the image.e.g.<img src="https//xxx" alt="xxx" width="50">).
         6.  **Report Compilation:**
             -   Synthesize all extracted, calculated, and retrieved information into a final, integrated report.
 
@@ -85,7 +87,7 @@ orca_analysis_agent = LlmAgent(
 
         ## Embedded Reference Data:
         -   Standard Free Energy of Proton in Water = -284.3 kcal/mol""",
-    tools=[dataAnalysys_tool, scientific_evaluator, adk_tavily_tool, manual_tool, get_image_from_url, get_image],
+    tools=[dataAnalysys_tool, scientific_evaluator, adk_tavily_tool, manual_tool, get_image_from_url, load_artifacts_tool],
     disallow_transfer_to_parent=True,
     )
 

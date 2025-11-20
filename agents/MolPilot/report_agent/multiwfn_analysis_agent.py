@@ -10,6 +10,8 @@ from .constant import (
     BOHRIUM_EXECUTOR, BOHRIUM_STORAGE, 
 )
 from ..tools import get_image_from_url, get_image
+from google.adk.tools.load_artifacts_tool import load_artifacts_tool
+
 
 
 # dataAnalysys_tool = CalculationMCPToolset(
@@ -40,12 +42,15 @@ model = LiteLlm(
 multiwfn_analysis_agent = LlmAgent(
     model=model, 
     name="Multiwfn_Analysis_Agent",
-    description="计算结果分析与报告生成器。负责从Multiwfn输出文件中提取关键数据,执行必要的后处理计算,并根据用户要求撰写清晰,美观的最终报告.",
+    description="负责从Multiwfn输出文件中提取关键数据,执行必要的后处理计算,并根据用户要求撰写清晰,美观的最终报告.",
     instruction="""
+        使用`get_image_from_url`下载Multiwfn输出文件中的图片.
+        使用`load_artifacts`将下载的图片加载到会话中.
+        解读图片中的内容,并根据内容编写详细的分析报告.
         将Multiwfn给出的图片插入到报告中.
         使用Markdown格式给出报告.必须插以这样的格式"<img src="https//xxx" alt="xxx" width="50">)."插入图片.
         """,
-    # tools=[get_image_from_url, get_image],
+    tools=[get_image_from_url, load_artifacts_tool],
     disallow_transfer_to_parent=True,
     )
 

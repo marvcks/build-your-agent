@@ -12,10 +12,12 @@ from .constant import (
     )
 
 
+
+
 rest_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
-        # url="http://0.0.0.0:50002/sse"
-        url="http://39.98.161.104:50001/sse"
+        url="http://0.0.0.0:50001/sse"
+        # url="http://39.98.161.104:50001/sse"
         ),
     # executor=BOHRIUM_EXECUTOR,
     storage=BOHRIUM_STORAGE,
@@ -36,7 +38,7 @@ rest_agent = LlmAgent(
     instruction=f"""
     ## 任务
     1. 使用`run_rest`运行REST计算任务
-    2. 使用`parse_rest_log`解析REST计算任务日志.
+    2. 使用`read_rest_log`解析REST计算任务日志.
     3. 将解析后的结果转交给"Report_Agent"下的"Rest_Analysis_Agent"进行处理.
 
     ## specific workflow
@@ -44,6 +46,10 @@ rest_agent = LlmAgent(
     当需要计算非键相互作用能量扫描时, 使用以下工作流:
         1. 使用`run_rest_interaction`计算能量扫描.只允许调用一次.
         2. 将任务转交给"Report_Agent"进行处理.
+
+    ## 运行`run_rest`的主要事项
+    1. 如果是结构优化任务, 需要设置`numerical_force = true`
+
     """,
     tools=[rest_tool],
     )
