@@ -51,7 +51,7 @@ rest_analysis_agent = LlmAgent(
     <img src="https//xxx" alt="xxx" width="50">
     ```
     """,
-    tools=[dataAnalysys_tool],
+    tools=[dataAnalysys_tool, load_artifacts_tool, get_image_from_url],
     disallow_transfer_to_parent=True,
     )
 
