@@ -44,8 +44,7 @@ multiwfn_agent = LlmAgent(
     当需要计算分子的Fukui函数时, 使用`run_multiwfn_fukui`工具.
     当需要计算分子的静电势时, 使用`run_multiwfn_esp`工具.
 
-    你的任务完成之后,你**必须**调度"Report_Agent"进行报告总结.
-    要求"Report_Agent"读取生成的图片,并根据图片内容进行分析,总结计算结果.
+    你的任务完成之后,你**必须**调度"Report_Agent"中的"Multiwfn_Analysis_Agent"进行报告总结.读取生成的图片,并根据图片内容进行分析,总结计算结果.
 
     你不能自己给出报告.
     """,

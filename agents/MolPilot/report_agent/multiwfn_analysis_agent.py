@@ -47,8 +47,10 @@ multiwfn_analysis_agent = LlmAgent(
         使用`get_image_from_url`下载Multiwfn输出文件中的图片.
         使用`load_artifacts`将下载的图片加载到会话中.
         解读图片中的内容,并根据内容编写详细的分析报告.
-        将Multiwfn给出的图片插入到报告中.
-        使用Markdown格式给出报告.必须插以这样的格式"<img src="https//xxx" alt="xxx" width="50">)."插入图片.
+        将Multiwfn给出的图片插入到报告中.必须插以这样的格式插入图片.例如:
+        ```markdown
+        ![figure xxx](https://bohrium.xxxh_x.png)  # Must use bohrium url
+        ```
         """,
     tools=[get_image_from_url, load_artifacts_tool],
     disallow_transfer_to_parent=True,

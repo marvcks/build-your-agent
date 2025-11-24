@@ -7,6 +7,14 @@ from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import SseServerParams
 
 from .tools import adk_tavily_tool
+from google.adk.agents.callback_context import CallbackContext
+from google.genai.types import Content
+
+
+def suppress_output_callback(callback_context: CallbackContext) -> Content:
+    """Suppresses the output of the agent by returning an empty Content object."""
+    return Content()
+
 
 model = LiteLlm(
     model=os.getenv("MODEL_NAME"),
@@ -96,5 +104,6 @@ qa_agent = LlmAgent(
         MolPilot是由上海创智学院/华东师范大学朱通团队开发的。
     """,
     tools=[manual_tool, orca_manual_tool, adk_tavily_tool],
+    after_agent_callback=suppress_output_callback,
     )
 

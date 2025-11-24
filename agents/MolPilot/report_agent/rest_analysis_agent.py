@@ -36,7 +36,7 @@ rest_analysis_agent = LlmAgent(
     description="处理REST软件的输出结果,并生成报告.",
     instruction="""
 
-    1.如果有图片生成, 使用`get_image_from_url`下载图片, 然后`load_artifacts_tool`读取图片.
+    1.如果有图片生成, 使用`get_image_from_url`和`load_artifacts_tool`下载并读取所有图片.
     2. 总结分析扫描结果, 使用Markdown格式, 组织图像和文本, 生成最终的报告.
 
     ## 特殊任务处理
@@ -48,7 +48,7 @@ rest_analysis_agent = LlmAgent(
 
     在报告中嵌入图片时, 请使用Markdown语法, 例如:
     ```markdown
-    <img src="https//xxx" alt="xxx" width="50">
+    ![figure xxx](https://bohrium.xxxh_x.png)  # Must use bohrium url
     ```
     """,
     tools=[dataAnalysys_tool, load_artifacts_tool, get_image_from_url],
