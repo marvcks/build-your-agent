@@ -15,8 +15,7 @@ from ..tools import adk_tavily_tool, get_image_from_url
 
 dataAnalysys_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
-        # url=os.getenv("MOLPILOT_SERVER_URL")
-        url="http://0.0.0.0:50001/sse"
+        url=os.getenv("MOLPILOT_SERVER_URL")
         ),
     storage=BOHRIUM_STORAGE,
     tool_filter=[

@@ -12,14 +12,11 @@ from .constant import (
     )
 
 
-
-
 rest_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
-        url="http://0.0.0.0:50001/sse"
-        # url="http://39.98.161.104:50001/sse"
+        url=os.getenv("MOLPILOT_SERVER_URL")
         ),
-    # executor=BOHRIUM_EXECUTOR,
+    executor=BOHRIUM_EXECUTOR,
     storage=BOHRIUM_STORAGE,
     tool_filter=['run_rest', 'read_rest_log', 'run_rest_interaction']
     )
