@@ -46,9 +46,7 @@ rest_analysis_agent = LlmAgent(
     4. 总结分析扫描结果, 使用Markdown格式, 组织图像和文本, 生成最终的报告.
 
     在报告中嵌入图片时, 请使用Markdown语法, 例如:
-    ```markdown
     ![figure xxx](https://bohrium.xxxh_x.png)  # Must use bohrium url
-    ```
     """,
     tools=[dataAnalysys_tool, load_artifacts_tool, get_image_from_url],
     disallow_transfer_to_parent=True,
