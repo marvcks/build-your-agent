@@ -15,7 +15,6 @@ reaction_tool = CalculationMCPToolset(
     connection_params=SseServerParams(
         url=os.getenv("MOLPILOT_SERVER_URL")
         ),
-    executor=BOHRIUM_EXECUTOR,
     storage=BOHRIUM_STORAGE,
     tool_filter=['enumerate_reactions']
     )

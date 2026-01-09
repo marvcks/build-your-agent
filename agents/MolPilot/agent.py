@@ -12,6 +12,8 @@ from .hypothesis_agent import hypothesis_agent
 from .qa_agent import qa_agent
 # from .esp_agent import esp_agent
 
+from .tools import upload_file_to_bohr
+
 
 model = LiteLlm(
     model=os.getenv("MODEL_NAME"),
@@ -32,6 +34,7 @@ root_agent = LlmAgent(
         and delegates tasks to the appropriate specialized sub-agents to achieve the final goal. You are the sole point of contact for the user.
         
         当用户需要查询量子化学软件的使用手册或者sobereva的博文时, 请调用Question_Answer_Agent.
+        当用户提供了分子结构文件, 请你首先使用`upload_file_to_bohr`工具把上传到Bohr平台, 然后把生成的URL传给下游智能体进行计算.
 
         如果用户问了与计算化学无关的问题，请你拒绝回答.
 
@@ -90,5 +93,6 @@ root_agent = LlmAgent(
             qa_agent,
             # esp_agent,
         ],
+    tools=[upload_file_to_bohr,]
     )
 
