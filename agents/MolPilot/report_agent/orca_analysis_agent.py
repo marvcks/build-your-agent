@@ -61,7 +61,7 @@ orca_analysis_agent = LlmAgent(
         4.  **External Data Retrieval:**
             -   If the report requires supplementary information (e.g., experimental values for comparison), you MUST use the `tavily_search` tool to find it.
         5.  **Image Handling:**
-            -   If there are any images generated during the calculation, you need to use the `get_image_from_url` tool to download the image, then use the `load_artifacts_tool` tool to get the image. Finally, embed the image in the report and explain its content(you should use Markdown syntax to embed the image.e.g.<img src="https//xxx" alt="xxx" width="50">).
+            -   If there are any images generated during the calculation, you need to use the `get_image_from_url` tool to download the image, then use the `load_artifacts_tool` tool to get the image. Finally, embed the image in the report and explain its content(you should use Markdown syntax to embed the image.e.g.![figure xxx](https://bohrium.xxxh_x.png)  # Must use bohrium url).
         6.  **Report Compilation:**
             -   Synthesize all extracted, calculated, and retrieved information into a final, integrated report.
 

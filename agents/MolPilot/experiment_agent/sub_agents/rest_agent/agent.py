@@ -17,7 +17,15 @@ rest_tool = CalculationMCPToolset(
         url=os.getenv("MOLPILOT_SERVER_URL")
         ),
     storage=BOHRIUM_STORAGE,
-    tool_filter=['run_rest', 'read_rest_log', 'run_rest_interaction']
+    tool_filter=['run_rest', 'run_rest_interaction']
+    )
+
+read_tool = CalculationMCPToolset(
+    connection_params=SseServerParams(
+        url=os.getenv("MOLPILOT_SERVER_URL")
+        ),
+    storage=BOHRIUM_STORAGE,
+    tool_filter=['read_rest_log']
     )
 
 
@@ -47,7 +55,7 @@ rest_agent = LlmAgent(
     1. 如果是结构优化任务, 需要设置`numerical_force = true`
 
     """,
-    tools=[rest_tool],
+    tools=[rest_tool,read_tool],
     )
 
 
